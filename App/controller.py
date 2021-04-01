@@ -53,14 +53,14 @@ def loadVideos(catalog):
     Carga los videos del archivo. Por cada video se indica al
     modelo que debe adicionarlo al catálogo
     """
-    videosfile = cf.data_dir + 'videos/videos-small.csv'
+    videosfile = cf.data_dir + 'videos/videos-large.csv'
     input_file = csv.DictReader(open(videosfile, encoding='utf-8'))
     for video in input_file:
         model.addVideo(catalog, video)
 
 def loadCategory(catalog):
     """
-    Cargar las categorías del archivo. Por cada categoría se indica al
+    Carga las categorías del archivo. Por cada categoría se indica al
     modelo que debe adicionarla al catálogo
     """
     categoryidfile = cf.data_dir + 'videos/category-id.csv'
@@ -69,6 +69,12 @@ def loadCategory(catalog):
         model.addCategory(catalog, category)
 
 # Funciones de ordenamiento
+
+def sortVideosByViews(catalog):
+    """
+    Ordena el catálogo de videos por su número de views
+    """
+    return model.sortVideosByViews(catalog)
 
 # Funciones de consulta sobre el catálogo
 
@@ -84,8 +90,26 @@ def categorySize(catalog):
     """
     return model.categorySize(catalog)
 
+def getCategoryid(catalog, name):
+    """
+    Retorna el id de una categoría
+    """
+    return model.getCategoryid(catalog, name)
+
 def getVideosByCountry(catalog, country):
     """
     Retorna los videos de un país específico
     """
     return model.getVideosByCountry(catalog, country)
+
+def getVideosByCategory(catalog, categoryid):
+    """
+    Retorna los videos de una categoría específica
+    """
+    return model.getVideosByCategory(catalog, categoryid)
+
+def getVideosByCategoryandCountry(catalog, category, country):
+    """
+    Retorna los videos de una categoría y país específicos
+    """
+    return model.getVideosByCategoryandCountry(catalog, category, country)
