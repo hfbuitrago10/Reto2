@@ -29,7 +29,7 @@ import config as cf
 from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
-from DISClib.Algorithms.Sorting import shellsort as sa
+from DISClib.Algorithms.Sorting import mergesort as ms
 assert cf
 
 """
@@ -47,6 +47,7 @@ def newCatalog():
     Video ids
     Category
     Category ids
+    Country
     """
     catalog = {'videos': None, 
                'videoids': None,
@@ -104,25 +105,49 @@ def newCatalog():
 def addVideo(catalog, video):
     """
     Adiciona un video a la lista de videos, adicionalmente lo guarda
-    en un map usando su id como llave.
-    Además, crea una entrada en el map de paises para indicar que ese
+    en un map usando su id como llave
+    Adicionalmente, crea una entrada en el map de categoryids para indicar
+    que el video pertenece a una id específica
+    Finalmente, crea una entrada en el map de países para indicar que el
     video pertenece a un país específico.
     """
     lt.addLast(catalog['videos'], video)
     mp.put(catalog['videoids'], video['video_id'], video)
+    addCategoryids(catalog, video)
     addVideoCountry(catalog, video)
 
 def addCategory(catalog, category):
     """
+    Adiciona las categorías al map de category, donde la llave es
+    el name y el valor es el id de la categoría
     """
-    newCategory = newVideoCategory(category['name'], category['id'])
-    mp.put(catalog['category'], category['name'], newCategory)
-    mp.put(catalog['categoryids'], category['id'], newCategory)
+    mp.put(catalog['category'], category['name'], category['id'])
+
+def addCategoryids(catalog, video):
+    """
+    Adiciona un video a la lista de videos de una categoría específica,
+    las categorías se guardan en un map, donde la llave es el id de la
+    categoría y el valor es la lista de videos de esa categoría
+    """
+    try:
+        categoryids = catalog['categoryids']
+        videoCategoryid = video['category_id']
+        existcategoryid = mp.contains(categoryids, videoCategoryid)
+        if existcategoryid:
+            entry = mp.get(categoryids, videoCategoryid)
+            categoryid = me.getValue(entry)
+        else:
+            categoryid = newVideoCategory(videoCategoryid)
+            mp.put(categoryids, videoCategoryid, categoryid)
+        lt.addLast(categoryid['videos'], video)
+        categoryid['total_videos'] = lt.size(categoryid['videos'])
+    except Exception:
+        return None
 
 def addVideoCountry(catalog, video):
     """
     Adiciona un video a la lista de videos de un país específico, los
-    paises se guardan en un map, donde la llave es el país y el valor
+    países se guardan en un map, donde la llave es el país y el valor
     es la lista de videos de ese país
     """
     try:
@@ -141,17 +166,15 @@ def addVideoCountry(catalog, video):
 
 # Funciones para creacion de datos
 
-def newVideoCategory(name, id):
+def newVideoCategory(id):
     """
-    Esta función crea la estructura de videps asociados a
+    Esta función crea la estructura de videos asociados a
     una categoría específica
     """
-    category = {'name': '', 
-                'id': '', 
+    category = {'id': '', 
                 'total_videos': 0,
                 'videos': None}
     
-    category['name'] = name
     category['id'] = id
     category['videos'] = lt.newList()
     return category
@@ -182,6 +205,18 @@ def categorySize(catalog):
     """
     return mp.size(catalog['category'])
 
+def getCategoryid(catalog, name):
+    """
+    Retorna el id de una categoría
+    """
+    categoryname = " " + name
+    entry = mp.get(catalog['category'], categoryname)
+    if entry:
+        categoryid = me.getValue(entry)
+        return categoryid
+    else:
+        return None
+
 def getVideosByCountry(catalog, country):
     """
     Retorna los videos de un país específico
@@ -190,7 +225,21 @@ def getVideosByCountry(catalog, country):
     if country:
         return me.getValue(country)['videos']
 
-# Funciones utilizadas para comparar elementos dentro de una lista
+def getVideosByCategory(catalog, categoryid):
+    """
+    Retorna los videos de una categoría específica
+    """
+    category = mp.get(catalog['categoryids'], categoryid)
+    if category:
+        return me.getValue(category)['videos']
+
+def getVideosByCategoryandCountry(catalog, category, country):
+    """
+    Retorna los videos de una categoría y país específicos
+    """
+    pass
+
+# Funciones utilizadas para comparar elementos
 
 def compareVideosids(id1, id2):
     """
@@ -266,10 +315,17 @@ def compareCountry(country1, country2):
     else:
         return -1
 
+def compareVideosByViews(video1, video2):
+    """
+    Compara dos videos por su número de views
+    """
+    return (float(video1['views']) > float(video2['views']))
+
 # Funciones de ordenamiento
 
 def sortVideosByViews(catalog):
     """
-    Ordena el catálogo de videos por sus 'views'
+    Ordena el catálogo de videos por su número de views
     """
-    pass
+    sortVideosByViews = ms.sort(catalog, compareVideosByViews)
+    return sortVideosByViews
