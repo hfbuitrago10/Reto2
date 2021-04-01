@@ -31,7 +31,7 @@ sys.setrecursionlimit(1000*10)
 
 """
 La vista se encarga de la interacción con el usuario
-Presenta el menu de opciones y por cada seleccion
+Presenta el menu de opciones y por cada selección
 se hace la solicitud al controlador para ejecutar la
 operación solicitada
 """
@@ -73,7 +73,8 @@ while True:
         print("El total de categorías cargadas es: " + str(controller.categorySize(catalog)) + "\n")
 
     elif int(inputs[0]) == 2:
-        categoryname = str(input("Ingrese el nombre de la categoría\n"))
+        name = str(input("Ingrese el nombre de la categoría\n"))
+        categoryid = controller.getCategoryid(catalog, name)
         country = str(input("Ingrese el país\n"))
         size = int(input("Ingrese el número de videos a listar\n"))
 
