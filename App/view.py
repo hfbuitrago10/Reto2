@@ -24,8 +24,10 @@ import config as cf
 import sys
 import controller
 from DISClib.ADT import list as lt
+from DISClib.ADT import map as mp
 assert cf
 
+sys.setrecursionlimit(1000*10)
 
 """
 La vista se encarga de la interacción con el usuario
@@ -36,8 +38,24 @@ operación solicitada
 
 def printMenu():
     print("Bienvenido")
-    print("1- Cargar información en el catálogo")
-    print("2- ")
+    print("1- Cargar información de videos en el catálogo")
+    print("2- Consultar videos tendencia con más views por categoría y país")
+    print("3- Consultar video tendencia por país")
+    print("4- Consultar video tendencia por categoría")
+    print("5- Consultar videos con más likes por país y tag")
+    print("0- Salir")
+
+def initCatalog():
+    """
+    Inicializa el catálogo de videos
+    """
+    return controller.initCatalog()
+
+def loadData(catalog):
+    """
+    Carga la información de los videos al catálogo
+    """
+    return controller.loadData(catalog)
 
 catalog = None
 
@@ -49,8 +67,23 @@ while True:
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
         print("Cargando información de los archivos ....")
+        catalog = initCatalog()
+        loadData(catalog)
+        print("El total de videos cargados es: " + str(controller.videosSize(catalog)))
+        print("El total de categorías cargadas es: " + str(controller.categorySize(catalog)) + "\n")
 
     elif int(inputs[0]) == 2:
+        categoryname = str(input("Ingrese el nombre de la categoría\n"))
+        country = str(input("Ingrese el país\n"))
+        size = int(input("Ingrese el número de videos a listar\n"))
+
+    elif int(inputs[0]) == 3:
+        pass
+
+    elif int(inputs[0]) == 4:
+        pass
+
+    elif int(inputs[0]) == 5:
         pass
 
     else:
