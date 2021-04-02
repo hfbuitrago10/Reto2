@@ -37,7 +37,7 @@ Se define la estructura de un catálogo de videos. El catálogo tendrá dos list
 los mismos.
 """
 
-# Construccion de modelos
+# Construcción de modelos
 
 def newCatalog():
     """
@@ -69,7 +69,7 @@ def newCatalog():
     """
     Este indice crea un map cuya llave es el video id del video
     """
-    catalog['videoids'] = mp.newMap(1000,
+    catalog['videoids'] = mp.newMap(500000,
                                     maptype='CHAINING',
                                     loadfactor=4.0,
                                     comparefunction=compareMapVideosids)
@@ -100,16 +100,16 @@ def newCatalog():
     
     return catalog
 
-# Funciones para agregar informacion al catálogo
+# Funciones para agregar información al catálogo
 
 def addVideo(catalog, video):
     """
     Adiciona un video a la lista de videos, adicionalmente lo guarda
     en un map usando su id como llave y calcula sus trending days
     Adicionalmente, crea una entrada en el map de categoryids para indicar
-    que el video pertenece a una id específica
+    que el video pertenece a una category id específica
     Finalmente, crea una entrada en el map de países para indicar que el
-    video pertenece a un país específico.
+    video pertenece a un país específico
     """
     lt.addLast(catalog['videos'], video)
     addVideoids(catalog, video)
@@ -125,9 +125,9 @@ def addCategory(catalog, category):
 
 def addVideoids(catalog, video):
     """
-    Adiciona un video a la lista de videos con un videoid específico,
+    Adiciona un video a la lista de videos con un video id específico,
     los video ids se guardan en un map, donde la llave es el id del video
-    y el valor es el numero de días de trending y la lista de videos con
+    y el valor es el número de días de trending y la lista de videos con
     ese video id
     """
     try:
@@ -186,7 +186,7 @@ def addVideoCountry(catalog, video):
     except Exception:
         return None
 
-# Funciones para creacion de datos
+# Funciones para creación de datos
 
 def newVideoid(videoid):
     """
@@ -271,6 +271,13 @@ def getVideosByCategory(catalog, categoryid):
 def getVideosByCategoryandCountry(catalog, category, country):
     """
     Retorna los videos de una categoría y país específicos
+    """
+    pass
+
+def getVideosByCountryandTag(catalog, country, tag):
+    """
+    Retorna los videos de un país específico, con un tag
+    específico
     """
     pass
 
