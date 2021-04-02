@@ -80,10 +80,17 @@ while True:
         size = int(input("Ingrese el número de videos a listar\n"))
 
     elif int(inputs[0]) == 3:
-        pass
+        country = str(input("Ingrese el país\n"))
+        videos = controller.getVideosByCountry(catalog, country)
+        firstVideo = controller.getFirstVideoByTrendDays(videos)
+        print(firstVideo)
 
     elif int(inputs[0]) == 4:
-        pass
+        name = str(input("Ingrese el nombre de la categoría\n"))
+        categoryid = controller.getCategoryid(catalog, name)
+        videos = controller.getVideosByCategory(catalog, categoryid)
+        firstVideo = controller.getFirstVideoByTrendDays(videos)
+        print(firstVideo)
 
     elif int(inputs[0]) == 5:
         pass
