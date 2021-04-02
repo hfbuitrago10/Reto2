@@ -190,6 +190,8 @@ def addVideoCountry(catalog, video):
 
 def newVideoid(videoid):
     """
+    Esta función crea la estructura de videos asociados a
+    una video id específica
     """
     videosid = {'videoid': '',
                 'trendingdays': 0,
@@ -271,6 +273,45 @@ def getVideosByCategoryandCountry(catalog, category, country):
     Retorna los videos de una categoría y país específicos
     """
     pass
+
+def getFirstVideoByTrendDays(catalog):
+    """
+    Retorna el video con mayor número de trending days
+    """
+    videoidsmap = mp.newMap(500000,
+                            maptype='CHAINING',
+                            loadfactor=4.0,
+                            comparefunction=compareMapVideosids)
+    try:
+        for video in lt.iterator(catalog):
+            videoid = video['video_id']
+            existvideoid = mp.contains(videoidsmap, videoid)
+            if existvideoid:
+                entry = mp.get(videoidsmap, videoid)
+                id = me.getValue(entry)
+            else:
+                id = newVideoid(videoid)
+                mp.put(videoidsmap, videoid, id)
+            lt.addLast(id['videos'], video)
+            id['trendingdays'] = lt.size(id['videos'])
+    except Exception:
+        return None
+    
+    mp.remove(videoidsmap, '#NAME?')
+    videoids = mp.keySet(videoidsmap)
+
+    try:
+        maxTrendDays = 0
+        firstVideo = None
+        for videoid in lt.iterator(videoids):
+            entry = mp.get(videoidsmap, videoid)
+            trendDays = me.getValue(entry)['trendingdays']
+            if trendDays > maxTrendDays:
+                maxTrendDays = trendDays
+                firstVideo = entry
+        return firstVideo
+    except Exception:
+        return None
 
 # Funciones utilizadas para comparar elementos
 
@@ -354,6 +395,12 @@ def compareVideosByViews(video1, video2):
     """
     return (float(video1['views']) > float(video2['views']))
 
+def compareVideosByLikes(video1, video2):
+    """
+    Compara dos videos por su número de likes
+    """
+    return (float(video1['likes']) > float(video2['likes']))
+
 # Funciones de ordenamiento
 
 def sortVideosByViews(catalog):
@@ -362,3 +409,10 @@ def sortVideosByViews(catalog):
     """
     sortVideosByViews = ms.sort(catalog, compareVideosByViews)
     return sortVideosByViews
+
+def sortVideosByLikes(catalog):
+    """
+    Ordena el catálogo de videos por su número de likes
+    """
+    sortVideosByLikes = ms.sort(catalog, compareVideosByLikes)
+    return sortVideosByLikes
