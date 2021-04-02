@@ -105,14 +105,14 @@ def newCatalog():
 def addVideo(catalog, video):
     """
     Adiciona un video a la lista de videos, adicionalmente lo guarda
-    en un map usando su id como llave
+    en un map usando su id como llave y calcula sus trending days
     Adicionalmente, crea una entrada en el map de categoryids para indicar
     que el video pertenece a una id específica
     Finalmente, crea una entrada en el map de países para indicar que el
     video pertenece a un país específico.
     """
     lt.addLast(catalog['videos'], video)
-    mp.put(catalog['videoids'], video['video_id'], video)
+    addVideoids(catalog, video)
     addCategoryids(catalog, video)
     addVideoCountry(catalog, video)
 
@@ -122,6 +122,28 @@ def addCategory(catalog, category):
     el name y el valor es el id de la categoría
     """
     mp.put(catalog['category'], category['name'], category['id'])
+
+def addVideoids(catalog, video):
+    """
+    Adiciona un video a la lista de videos con un videoid específico,
+    los video ids se guardan en un map, donde la llave es el id del video
+    y el valor es el numero de días de trending y la lista de videos con
+    ese video id
+    """
+    try:
+        videoids = catalog['videoids']
+        videoid = video['video_id']
+        existvideoid = mp.contains(videoids, videoid)
+        if existvideoid:
+            entry = mp.get(videoids, videoid)
+            id = me.getValue(entry)
+        else:
+            id = newVideoid(videoid)
+            mp.put(videoids, videoid, id)
+        lt.addLast(id['videos'], video)
+        id['trendingdays'] = lt.size(id['videos'])
+    except Exception:
+        return None
 
 def addCategoryids(catalog, video):
     """
@@ -165,6 +187,17 @@ def addVideoCountry(catalog, video):
         return None
 
 # Funciones para creacion de datos
+
+def newVideoid(videoid):
+    """
+    """
+    videosid = {'videoid': '',
+                'trendingdays': 0,
+                'videos': None}
+    
+    videosid['videoid'] = videoid
+    videosid['videos'] = lt.newList()
+    return videosid
 
 def newVideoCategory(id):
     """
