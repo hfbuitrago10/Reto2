@@ -29,7 +29,7 @@ import csv
 El controlador se encarga de mediar entre la vista y el modelo.
 """
 
-# Inicialización del Catálogo de libros
+# Inicialización del catálogo de libros
 
 def initCatalog():
     """
@@ -119,6 +119,13 @@ def getVideosByCategoryandCountry(catalog, category, country):
     Retorna los videos de una categoría y país específicos
     """
     return model.getVideosByCategoryandCountry(catalog, category, country)
+
+def getVideosByCountryandTag(catalog, country, tag):
+    """
+    Retorna los videos de un país específico, con un tag
+    específico
+    """
+    return model.getVideosByCountryandTag(catalog, country, tag)
 
 def getFirstVideoByTrendDays(catalog):
     """
