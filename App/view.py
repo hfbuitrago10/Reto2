@@ -37,6 +37,24 @@ se hace la solicitud al controlador para ejecutar la
 operación solicitada
 """
 
+# Funciones para la impresión de resultados
+
+def printFirstVideoByTrendDays(firstVideo, option):
+    """
+    Imprime la información del video con mayor número de
+    días de tendencia
+    """
+    video = lt.firstElement(me.getValue(firstVideo)['videos'])
+    trenddays = me.getValue(firstVideo)['trendingdays']
+    if int(option) == 1:
+        print("Título: " + video['title'] + "  Canal: " + video['channel_title'] + "  País: " +
+        video['country'] + "  Días tendencia: " + str(trenddays) + "\n")
+    elif int(option) == 2:
+        print("Título: " + video['title'] + "  Canal: " + video['channel_title'] + "  Categoría: " +
+        video['category_id'] + "  Días tendencia: " + str(trenddays) + "\n")
+
+# Menu de opciones
+
 def printMenu():
     print("Bienvenido")
     print("1- Cargar información de videos en el catálogo")
@@ -45,6 +63,8 @@ def printMenu():
     print("4- Consultar video tendencia por categoría")
     print("5- Consultar videos con más likes por país y tag")
     print("0- Salir")
+
+# Funciones de inicialización
 
 def initCatalog():
     """
@@ -83,17 +103,21 @@ while True:
         country = str(input("Ingrese el país\n"))
         videos = controller.getVideosByCountry(catalog, country)
         firstVideo = controller.getFirstVideoByTrendDays(videos)
-        print(firstVideo)
+        print("El video con más días tendencia del país " + country + " es: ")
+        printFirstVideoByTrendDays(firstVideo, 1)
 
     elif int(inputs[0]) == 4:
         name = str(input("Ingrese el nombre de la categoría\n"))
         categoryid = controller.getCategoryid(catalog, name)
         videos = controller.getVideosByCategory(catalog, categoryid)
         firstVideo = controller.getFirstVideoByTrendDays(videos)
-        print(firstVideo)
+        print("El video con más días tendencia de la categoría " + name + " es: ")
+        printFirstVideoByTrendDays(firstVideo, 2)
 
     elif int(inputs[0]) == 5:
-        pass
+        country = str(input("Ingrese el país\n"))
+        tag = str(input("Ingrese el tag\n"))
+        size = int(input("Ingrese el número de videos a lista\n"))
 
     else:
         sys.exit(0)
