@@ -76,6 +76,12 @@ def sortVideosByViews(catalog):
     """
     return model.sortVideosByViews(catalog)
 
+def sortVideosByLikes(catalog):
+    """
+    Ordena el catálogo de videos por su número de likes
+    """
+    return model.sortVideosByLikes(catalog)
+
 # Funciones de consulta sobre el catálogo
 
 def videosSize(catalog):
@@ -113,3 +119,9 @@ def getVideosByCategoryandCountry(catalog, category, country):
     Retorna los videos de una categoría y país específicos
     """
     return model.getVideosByCategoryandCountry(catalog, category, country)
+
+def getFirstVideoByTrendDays(catalog):
+    """
+    Retorna el video con mayor número de trending days
+    """
+    return model.getFirstVideoByTrendDays(catalog)
