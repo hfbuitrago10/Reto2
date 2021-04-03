@@ -108,11 +108,11 @@ def getVideosByCountry(catalog, country):
     """
     return model.getVideosByCountry(catalog, country)
 
-def getVideosByCategory(catalog, categoryid):
+def getVideosByCategory(catalog, category):
     """
     Retorna los videos de una categoría específica
     """
-    return model.getVideosByCategory(catalog, categoryid)
+    return model.getVideosByCategory(catalog, category)
 
 def getVideosByCategoryandCountry(catalog, category, country):
     """
