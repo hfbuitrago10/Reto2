@@ -55,6 +55,22 @@ def printSortedVideosByViews(sortedVideos, sample):
             index += 1
         print()
 
+def printSortedVideosByLikes(sortedVideos, sample):
+    """
+    Imprime la información de los videos con mayor número
+    de likes
+    """
+    size = int(lt.size(sortedVideos))
+    if size > sample:
+        index = 1
+        while index <= sample:
+            video = lt.getElement(sortedVideos, index)
+            print("Título: " + video['title'] + "  Canal: " + video['channel_title'] + "  Fecha de publicación: " +
+            video['publish_time'] + "  Views: " + video['views'] + "  Likes: " + video['likes'] + "  Dislikes: " +
+            video['dislikes'] + "  Tags: " + video['tags'])
+            index += 1
+        print()
+
 def printFirstVideoByTrendDays(firstVideo, option):
     """
     Imprime la información del video con mayor número de
@@ -116,9 +132,12 @@ while True:
         sample = int(input("Ingrese el número de videos a listar\n"))
         videos = controller.getVideosByCategoryandCountry(catalog, categoryid, country)
         sortedVideos = controller.sortVideosByViews(videos)
-        print("Los " + str(sample) + " videos con más views de la categoría " + name + " de " +
-        country + " son: ")
-        printSortedVideosByViews(sortedVideos, sample)
+        if sample > int(lt.size(videos)):
+            print("El número de videos a listar excede el tamaño del catálogo\n")
+        else:
+            print("Los " + str(sample) + " videos con más views de la categoría " + name + " de " + 
+            country + " son: ")
+            printSortedVideosByViews(sortedVideos, sample)
 
     elif int(inputs[0]) == 3:
         country = str(input("Ingrese el país\n"))
@@ -138,7 +157,15 @@ while True:
     elif int(inputs[0]) == 5:
         country = str(input("Ingrese el país\n"))
         tag = str(input("Ingrese el tag\n"))
-        size = int(input("Ingrese el número de videos a lista\n"))
+        sample = int(input("Ingrese el número de videos a listar\n"))
+        videos = controller.getVideosByCountryandTag(catalog, country, tag)
+        sortedVideos = controller.sortVideosByLikes(videos)
+        if sample > int(lt.size(videos)):
+            print("El número de videos a listar excede el tamaño del catálogo\n")
+        else:
+            print("Los " + str(sample) + " videos con más likes de " + country + " con el tag " + 
+            tag + " son: ")
+            printSortedVideosByLikes(sortedVideos, sample)
 
     else:
         sys.exit(0)
