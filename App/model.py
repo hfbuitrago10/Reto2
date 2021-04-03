@@ -34,7 +34,7 @@ assert cf
 
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
-los mismos.
+los mismos
 """
 
 # Construcción de modelos
@@ -272,40 +272,30 @@ def getVideosByCategoryandCountry(catalog, category, country):
     """
     Retorna los videos de una categoría y país específicos
     """
-    countrymap = mp.newMap(200000,
-                            maptype='CHAINING',
-                            loadfactor=4.0,
-                            comparefunction=compareMapCountry)
-    
-    videoscategory = getVideosByCategory(catalog, category)
-
+    category = getVideosByCategory(catalog, category)
     try:
-        for video in lt.iterator(videoscategory):
-            videocountry = video['country']
-            existvideocountry = mp.contains(countrymap, videocountry)
-            if existvideocountry:
-                entry = mp.get(countrymap, videocountry)
-                countryvalue = me.getValue(entry)
-            else:
-                countryvalue = newVideoCountry(videocountry)
-                mp.put(countrymap, videocountry, countryvalue)
-            lt.addLast(countryvalue['videos'], video)
-    except Exception:
-        return None
-    
-    try:
-        entry = mp.get(countrymap, country)
-        videos = me.getValue(entry)['videos']
+        videos = lt.newList()
+        for video in lt.iterator(category):
+            if country == video['country']:
+                lt.addLast(videos, video)
         return videos
     except Exception:
-        return None
+        return None 
 
 def getVideosByCountryandTag(catalog, country, tag):
     """
     Retorna los videos de un país específico, con un tag
     específico
     """
-    pass
+    country = getVideosByCountry(catalog, country)
+    try:
+        videos = lt.newList()
+        for video in lt.iterator(country):
+            if tag.lower() in video['tags'].lower():
+                lt.addLast(videos, video)
+        return videos
+    except Exception:
+        return None
 
 def getFirstVideoByTrendDays(catalog):
     """
@@ -330,6 +320,7 @@ def getFirstVideoByTrendDays(catalog):
     except Exception:
         return None
     
+    mp.remove(videoidsmap, '#NAME?')
     videoids = mp.keySet(videoidsmap)
 
     try:
