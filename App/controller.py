@@ -26,7 +26,7 @@ import csv
 
 
 """
-El controlador se encarga de mediar entre la vista y el modelo.
+El controlador se encarga de mediar entre la vista y el modelo
 """
 
 # Inicialización del catálogo de libros
