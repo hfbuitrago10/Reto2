@@ -39,6 +39,22 @@ operación solicitada
 
 # Funciones para la impresión de resultados
 
+def printSortedVideosByViews(sortedVideos, sample):
+    """
+    Imprime la información de los videos con mayor número
+    de views
+    """
+    size = int(lt.size(sortedVideos))
+    if size > sample:
+        index = 1
+        while index <= sample:
+            video = lt.getElement(sortedVideos, index)
+            print("Fecha de tendencia: " + video['trending_date'] + "  Título: " + video['title'] + "  Canal: " + 
+            video['channel_title'] + "  Fecha de publicación: " + video['publish_time'] + "  Views: " + 
+            video['views'] + "  Likes: " + video['likes'] + "  Dislikes: " + video['dislikes'])
+            index += 1
+        print()
+
 def printFirstVideoByTrendDays(firstVideo, option):
     """
     Imprime la información del video con mayor número de
@@ -97,7 +113,12 @@ while True:
         name = str(input("Ingrese el nombre de la categoría\n"))
         categoryid = controller.getCategoryid(catalog, name)
         country = str(input("Ingrese el país\n"))
-        size = int(input("Ingrese el número de videos a listar\n"))
+        sample = int(input("Ingrese el número de videos a listar\n"))
+        videos = controller.getVideosByCategoryandCountry(catalog, categoryid, country)
+        sortedVideos = controller.sortVideosByViews(videos)
+        print("Los " + str(sample) + " videos con más views de la categoría " + name + " de " +
+        country + " son: ")
+        printSortedVideosByViews(sortedVideos, sample)
 
     elif int(inputs[0]) == 3:
         country = str(input("Ingrese el país\n"))
