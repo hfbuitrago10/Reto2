@@ -44,10 +44,10 @@ def newCatalog():
     Inicializa el catálogo de videos. Crea una lista para guardar
     los videos. Se crean indices (maps) por los siguientes
     criterios:
-    Video ids
-    Category
-    Category ids
-    Country
+    video ids
+    category
+    category ids
+    country
     """
     catalog = {'videos': None, 
                'videoids': None,
@@ -69,7 +69,7 @@ def newCatalog():
     """
     Este indice crea un map cuya llave es el video id del video
     """
-    catalog['videoids'] = mp.newMap(500000,
+    catalog['videoids'] = mp.newMap(200000,
                                     maptype='CHAINING',
                                     loadfactor=4.0,
                                     comparefunction=compareMapVideosids)
@@ -105,8 +105,8 @@ def newCatalog():
 def addVideo(catalog, video):
     """
     Adiciona un video a la lista de videos, adicionalmente lo guarda
-    en un map usando su id como llave y calcula sus trending days
-    Adicionalmente, crea una entrada en el map de categoryids para indicar
+    en un map usando su id como llave
+    Adicionalmente, crea una entrada en el map de category ids para indicar
     que el video pertenece a una category id específica
     Finalmente, crea una entrada en el map de países para indicar que el
     video pertenece a un país específico
@@ -260,11 +260,11 @@ def getVideosByCountry(catalog, country):
     if country:
         return me.getValue(country)['videos']
 
-def getVideosByCategory(catalog, categoryid):
+def getVideosByCategory(catalog, category):
     """
     Retorna los videos de una categoría específica
     """
-    category = mp.get(catalog['categoryids'], categoryid)
+    category = mp.get(catalog['categoryids'], category)
     if category:
         return me.getValue(category)['videos']
 
@@ -272,7 +272,33 @@ def getVideosByCategoryandCountry(catalog, category, country):
     """
     Retorna los videos de una categoría y país específicos
     """
-    pass
+    countrymap = mp.newMap(200000,
+                            maptype='CHAINING',
+                            loadfactor=4.0,
+                            comparefunction=compareMapCountry)
+    
+    videoscategory = getVideosByCategory(catalog, category)
+
+    try:
+        for video in lt.iterator(videoscategory):
+            videocountry = video['country']
+            existvideocountry = mp.contains(countrymap, videocountry)
+            if existvideocountry:
+                entry = mp.get(countrymap, videocountry)
+                countryvalue = me.getValue(entry)
+            else:
+                countryvalue = newVideoCountry(videocountry)
+                mp.put(countrymap, videocountry, countryvalue)
+            lt.addLast(countryvalue['videos'], video)
+    except Exception:
+        return None
+    
+    try:
+        entry = mp.get(countrymap, country)
+        videos = me.getValue(entry)['videos']
+        return videos
+    except Exception:
+        return None
 
 def getVideosByCountryandTag(catalog, country, tag):
     """
@@ -285,7 +311,7 @@ def getFirstVideoByTrendDays(catalog):
     """
     Retorna el video con mayor número de trending days
     """
-    videoidsmap = mp.newMap(500000,
+    videoidsmap = mp.newMap(200000,
                             maptype='CHAINING',
                             loadfactor=4.0,
                             comparefunction=compareMapVideosids)
@@ -304,7 +330,6 @@ def getFirstVideoByTrendDays(catalog):
     except Exception:
         return None
     
-    mp.remove(videoidsmap, '#NAME?')
     videoids = mp.keySet(videoidsmap)
 
     try:
