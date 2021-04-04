@@ -70,32 +70,32 @@ def newCatalog():
     Este indice crea un map cuya llave es el video id del video
     """
     catalog['videoids'] = mp.newMap(200000,
-                                    maptype='CHAINING',
-                                    loadfactor=4.0,
-                                    comparefunction=compareMapVideosids)
+                                     maptype='PROBING',
+                                     loadfactor=0.30,
+                                     comparefunction=compareMapVideosids)
 
     """
     Este indice crea un map cuya llave es el category name del video
     """
-    catalog['category'] = mp.newMap(100, 
-                                      maptype='CHAINING', 
-                                      loadfactor=4.0,
-                                      comparefunction=compareCategory)
+    catalog['category'] = mp.newMap(35, 
+                                     maptype='PROBING', 
+                                     loadfactor=0.30,
+                                     comparefunction=compareCategory)
     
     """
     Este indice crea un map cuya llave es el category id del video
     """
-    catalog['categoryids'] = mp.newMap(100,
-                                        maptype='CHAINING',
-                                        loadfactor=4.0,
+    catalog['categoryids'] = mp.newMap(20,
+                                        maptype='PROBING',
+                                        loadfactor=0.30,
                                         comparefunction=compareCategoryids)
     
     """
     Este indice crea un map cuya llave es el país del video
     """
-    catalog['country'] = mp.newMap(100,
-                                    maptype='CHAINING',
-                                    loadfactor=4.0,
+    catalog['country'] = mp.newMap(10,
+                                    maptype='PROBING',
+                                    loadfactor=0.30,
                                     comparefunction=compareMapCountry)
     
     return catalog
