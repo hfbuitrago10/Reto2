@@ -59,7 +59,7 @@ def newCatalog():
     Esta lista contiene los videos del archivo. Los videos son
     referenciados por los indices creados a continuación
     """
-    catalog['videos'] = lt.newList('SINGLE_LINKED', compareVideosids)
+    catalog['videos'] = lt.newList('ARRAY_LIST', compareVideosids)
 
     """
     Se crean indices (maps) por diferentes criterios para llegar
@@ -198,7 +198,7 @@ def newVideoid(videoid):
                 'videos': None}
     
     videosid['videoid'] = videoid
-    videosid['videos'] = lt.newList()
+    videosid['videos'] = lt.newList('ARRAY_LIST')
     return videosid
 
 def newVideoCategory(id):
@@ -211,7 +211,7 @@ def newVideoCategory(id):
                 'videos': None}
     
     category['id'] = id
-    category['videos'] = lt.newList()
+    category['videos'] = lt.newList('ARRAY_LIST')
     return category
 
 def newVideoCountry(country):
@@ -223,7 +223,7 @@ def newVideoCountry(country):
                     'videos': None}
 
     countryentry['country'] = country
-    countryentry['videos'] = lt.newList()
+    countryentry['videos'] = lt.newList('ARRAY_LIST')
     return countryentry
 
 # Funciones de consulta
@@ -274,7 +274,7 @@ def getVideosByCategoryandCountry(catalog, category, country):
     """
     category = getVideosByCategory(catalog, category)
     try:
-        videos = lt.newList()
+        videos = lt.newList('ARRAY_LIST')
         for video in lt.iterator(category):
             if country == video['country']:
                 lt.addLast(videos, video)
@@ -289,7 +289,7 @@ def getVideosByCountryandTag(catalog, country, tag):
     """
     country = getVideosByCountry(catalog, country)
     try:
-        videos = lt.newList()
+        videos = lt.newList('ARRAY_LIST')
         for video in lt.iterator(country):
             if tag.lower() in video['tags'].lower():
                 lt.addLast(videos, video)
